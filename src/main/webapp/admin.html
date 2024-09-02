@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Insert title here</title>
+</head>
+<body>
+<h1>LOGGED IN SUCCESSFULLY</h1>
+<a href = "webapi/myresource/check_role_requests">CHECK ROLE REQUESTS</a> <br>
+<a href = "webapi/myresource/check_resource_requests">CHECK RESOURCE REQUESTS</a> <br>
+
+<a href = "webapi/myresource/check_all_resource">CHECK ALL RESOURCES</a> <br>
+<div>
+<a >ADD RESOURCES</a> 
+<input type=text id = "addres" name = "addres" ></input>
+<button onclick = "addres()">submit</button>
+</div>
+<div>
+<a >REMOVE RESOURCES FROM DATA BASE</a>
+
+<select id="new resource" name="new resource">
+
+</select>
+<button onclick = "deletefromdb()">Submit</button>
+</div>
+<div>
+<a>REMOVE RESOURCE FROM USER:</a>
+<a>User Name</a>
+<input type=text id="rem resource" name="rem resource" ></input>
+<button onclick = "remres()" >Submit</button>
+<select id="userResourceDropdown" name="userResourceDropdown">
+  <option value="option1">Option 1</option>
+  <option value="option2">Option 2</option>
+  <option value="option3">Option 3</option>
+  <option value="option4">Option 4</option>
+</select>
+<button onclick = "deletefromuser()">Submit</button>
+
+</div>
+<div>
+<a>CHECK USER FOR RESOURCE</a>
+<a>Resource</a>
+<input type="text" , name = "userfr" , id = "userfr"></input>
+<button onclick = "userfr()">Submit</button>
+</div>
+<div>
+<a>CHECK RESOURCES OF AN USER</a> <br>
+<a> UserName</a>
+<input type ="text", name = "resfu", id = "resfu"></input>
+<button onclick = "resfu()">submit</button>
+</div>
+<script>
+
+		function deletefromuser() {
+		    // Get the dropdown element
+		    const dropdown = document.getElementById('userResourceDropdown');
+		    // Get the selected value
+		    const selectedValue = dropdown.value;
+		    const username = document.getElementById('rem resource');
+		    const selectedValue1 = username.value;
+		    console.log(selectedValue1);
+		    // Construct the URL with the selected value as a path parameter
+		    const url = `http://localhost:6970/Project/webapi/myresource/deletefromuser/${selectedValue},${selectedValue1}`;
+		    
+		    location.replace(url);
+		
+		}
+		function deletefromdb() {
+		    // Get the dropdown element
+		    const dropdown = document.getElementById('new resource');
+		    
+		    // Get the selected value
+		    const selectedValue = dropdown.value;
+		    // Construct the URL with the selected value as a path parameter
+		    const url = `http://localhost:6970/Project/webapi/myresource/deletefromdb/${selectedValue}`;
+		    
+		    location.replace(url);
+		
+		}
+		function userfr() {
+		    // Get the dropdown element
+		    const dropdown = document.getElementById('userfr');
+		    // Get the selected value
+		    const selectedValue = dropdown.value;
+		    // Construct the URL with the selected value as a path parameter
+		    const url = `http://localhost:6970/Project/webapi/myresource/user_f_res/${selectedValue}`;
+		    
+		    location.replace(url);
+		
+		}
+</script>
+<script>
+        function resfu() {
+            // Get the dropdown element
+            const dropdown = document.getElementById('resfu');
+            // Get the selected value
+            const selectedValue = dropdown.value;
+            // Construct the URL with the selected value as a path parameter
+            const url = `http://localhost:6970/Project/webapi/myresource/res_f_user/${selectedValue}`;
+            
+            location.replace(url);
+
+        }
+</script>
+<script>
+        function addres() {
+            // Get the dropdown element
+            const dropdown = document.getElementById('addres');
+            // Get the selected value
+            const selectedValue = dropdown.value;
+            // Construct the URL with the selected value as a path parameter
+            const url = `http://localhost:6970/Project/webapi/myresource/add_resource/${selectedValue}`;
+            
+            location.replace(url);
+
+        }
+</script>
+<script>
+        
+           document.addEventListener('DOMContentLoaded', () => {
+        fetchResources();
+       // fetchUserResources();
+    });
+           function remres() {
+               // Get the dropdown element
+               const dropdown = document.getElementById('rem resource');
+               // Get the selected value
+               const selectedValue = dropdown.value;
+               console.log(selectedValue);
+               // Construct the URL with the selected value as a path parameter
+               fetchUserResources(selectedValue);
+           }
+    function fetchResources() {
+    	console.log("started");
+    	const dropdown = document.getElementById('new resource');
+        fetch('http://localhost:6970/Project/webapi/myresource/check_all_res')
+            .then(response => response.text())
+            .then(data => {
+                const resources = data.split(' ');
+                dropdown.innerHTML = ''; // Clear previous options
+                resources.forEach(resource => {
+                    const option = document.createElement('option');
+                    option.text = resource.trim(); // Assuming resource has a name property
+                    dropdown.add(option);
+                	console.log( resource.trim());
+                });
+            })
+            .catch(error => console.error('Error fetching resources:', error));
+    }
+
+    function fetchUserResources(selectedvalue) {
+    	console.log(selectedvalue);
+        const dropdown = document.getElementById('userResourceDropdown');
+        fetch(`http://localhost:6970/Project/webapi/myresource/get_user_resources/${selectedvalue}`)
+            .then(response => response.text())
+            .then(data => {
+                const resources = data.split(' ');
+                dropdown.innerHTML = ''; // Clear previous options
+                resources.forEach(resource => {
+                    const option = document.createElement('option');
+                    option.text = resource.trim(); // Assuming resource has a name property
+                    dropdown.add(option);
+                	console.log( resource.trim());
+                });
+            })
+            .catch(error => console.error('Error fetching user resources:', error));
+    }
+    </script>
+</body>
+</html>

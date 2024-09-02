@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Insert title here</title>
+</head>
+<body>
+<h1>LOGGED IN SUCCESSFULLY</h1>
+<a href = "webapi/myresource/check_resource">CHECK MY RESOURCES</a>
+<div>
+<a>Request for new resource:</a>
+<select id="new resource" name="new resource">
+  <option value="option1">Option 1</option>
+  <option value="option2">Option 2</option>
+  <option value="option3">Option 3</option>
+  <option value="option4">Option 4</option>
+</select>
+<button onclick = "resourceApi()">Submit</button>
+</div>
+<a href = "webapi/myresource/check_role_requests">CHECK ROLE REQUESTS</a> <br>
+<a href = "webapi/myresource/check_resource_requests">CHECK RESOURCE REQUESTS</a> <br>
+<div>
+<a>REQUEST FOR MANAGER/ADMIN</a>
+<input name = "request_user" id = "request_user" ></input>
+<button onclick = "request_manager()" >submit</button>
+</div>
+<div>
+<a>Remove own Resource:</a>
+<select id="delete resource" name="delete resource">
+  <option value="option1">Option 1</option>
+  <option value="option2">Option 2</option>
+  <option value="option3">Option 3</option>
+  <option value="option4">Option 4</option>
+</select>
+<button onclick = "deleteApi()">Submit</button>
+</div>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    fetchnewResources();
+    fetchdeleteResources();
+});
+		function fetchnewResources(){
+			console.log("start1")
+	        const dropdown = document.getElementById('new resource');
+	        fetch(`http://localhost:6970/Project/webapi/myresource/requestnew`)
+	            .then(response => response.text())
+	            .then(data => {
+	                const resources = data.split(' ');
+	                dropdown.innerHTML = ''; // Clear previous options
+	                resources.forEach(resource => {
+	                    const option = document.createElement('option');
+	                    option.text = resource.trim(); // Assuming resource has a name property
+	                    dropdown.add(option);
+	              
+	                });
+	            })
+	            .catch(error => console.error('Error fetching user resources:', error));
+	    
+		}
+		function fetchdeleteResources(){
+			console.log("testing");
+	        const dropdown = document.getElementById('delete resource');
+	        fetch(`http://localhost:6970/Project/webapi/myresource/deleteresource`)
+	            .then(response => response.text())
+	            .then(data => {
+	                const resources = data.split(' ');
+	                dropdown.innerHTML = ''; // Clear previous options
+	                resources.forEach(resource => {
+	                    const option = document.createElement('option');
+	                    option.text = resource.trim(); // Assuming resource has a name property
+	                    dropdown.add(option);
+	                    console.log(resource);
+	                	
+	                });
+	            })
+	            .catch(error => console.error('Error fetching user resources:', error));
+		}
+</script>
+<script>
+
+        function request_manager() {
+                // Get the dropdown element
+                const dropdown = document.getElementById('request_user');
+                // Get the selected value
+                const selectedValue = dropdown.value;
+                // Construct the URL with the selected value as a path parameter
+                const url = `http://localhost:6970/Project/webapi/myresource/user_req/${selectedValue}`;
+                location.replace(url);
+        }
+</script>
+<script>
+        function resourceApi() {
+            // Get the dropdown element
+            const dropdown = document.getElementById('new resource');
+            // Get the selected value
+            const selectedValue = dropdown.value;
+            // Construct the URL with the selected value as a path parameter
+            const url = `http://localhost:6970/Project/webapi/myresource/add_resource_request/${selectedValue}`;
+            location.replace(url);
+
+
+        }
+</script>
+<script>
+        function deleteApi() {
+            // Get the dropdown element
+            const dropdown = document.getElementById('delete resource');
+            // Get the selected value
+            const selectedValue = dropdown.value;
+            // Construct the URL with the selected value as a path parameter
+            const url = `http://localhost:6970/Project/webapi/myresource/delete_self_resource/${selectedValue}`;
+            
+            location.replace(url);
+            // Make the API call (using fetch for example)
+           // fetch(url)
+           //     .then(response => response.json())
+           //     .then(data => {
+           //         console.log(data); // Handle the API response
+           //     })
+           //     .catch(error => {
+                	//         console.error('Error:', error); // Handle any errors
+           //     });
+           
+        }
+</script>
+</body>
+</html>
